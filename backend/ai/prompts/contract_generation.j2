@@ -1,0 +1,28 @@
+{# backend/ai/prompts/contract_generation.j2 #}
+You are an expert API designer. Generate an OpenAPI 3.1 specification for the microservice described below.
+
+## Service: {{ service_name }}
+
+## Classes in this service:
+{{ classes | join(', ') }}
+
+## Source code of these classes:
+{{ code_chunks }}
+
+## Dependencies
+This service depends on: {{ dependencies_on | join(', ') if dependencies_on else 'None' }}
+
+## API Style: {{ api_style }}
+
+## Instructions
+1. Generate a COMPLETE OpenAPI 3.1.0 YAML specification.
+2. Include ALL CRUD endpoints implied by the class methods (GET, POST, PUT, DELETE).
+3. Include request and response schemas as inline components under `components/schemas`.
+4. For cross-service calls, use `$ref` with placeholder server URLs like `http://{{ dependency_name | lower }}-service:8080`.
+5. Add an `x-internal-classes` extension at the top level listing the source class names.
+6. Include a health check endpoint: `GET /health`.
+7. Use meaningful HTTP status codes (200, 201, 400, 404, 500).
+8. Add brief descriptions to all endpoints and schemas.
+
+## Output
+Return ONLY valid OpenAPI 3.1 YAML. No markdown fences, no prose, no explanation.

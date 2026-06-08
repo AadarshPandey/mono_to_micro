@@ -1,0 +1,15 @@
+  paymentprocessing:
+    build:
+      context: ./services/paymentprocessing
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - SERVER_PORT=8083
+    
+    depends_on:
+      
+      - customermanagement
+      
+    
+    restart: unless-stopped

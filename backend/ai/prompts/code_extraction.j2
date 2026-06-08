@@ -1,0 +1,40 @@
+{# backend/ai/prompts/code_extraction.j2 #}
+You are an expert software engineer performing a monolith-to-microservice migration.
+
+## Task
+Rewrite the following monolith classes into a standalone {{ framework }} microservice called "{{ service_name }}".
+
+## Approved OpenAPI Contract
+```yaml
+{{ openapi_spec }}
+```
+
+## Original Monolith Source Classes
+{{ source_classes }}
+
+## Language: {{ language }}
+## Framework: {{ framework }}
+
+## Instructions
+1. REWRITE each class to remove ALL monolith-internal imports.
+2. Replace shared-database direct calls with the REPOSITORY PATTERN (each service owns its data).
+3. Replace cross-service direct method calls with HTTP CLIENT calls to the approved OpenAPI endpoints.
+4. PRESERVE all business logic exactly — do NOT simplify, omit, or refactor logic.
+5. Add proper error handling for HTTP client calls (timeouts, retries, circuit breaker stubs).
+6. Use dependency injection patterns appropriate to the framework.
+7. Do NOT include test files or build configuration files — scaffolding templates handle those.
+
+## Output Format
+Return a JSON object:
+```json
+{
+  "files": [
+    {
+      "path": "src/main/java/com/example/order/OrderController.java",
+      "content": "// full file content here"
+    }
+  ]
+}
+```
+
+Return ONLY the JSON object, no other text.

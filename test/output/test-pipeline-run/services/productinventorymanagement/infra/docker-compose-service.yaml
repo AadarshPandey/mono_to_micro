@@ -1,0 +1,10 @@
+  productinventorymanagement:
+    build:
+      context: ./services/productinventorymanagement
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - SERVER_PORT=8082
+    
+    restart: unless-stopped

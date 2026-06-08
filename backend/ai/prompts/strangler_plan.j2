@@ -1,0 +1,47 @@
+{# backend/ai/prompts/strangler_plan.j2 #}
+You are an expert in legacy system migration using the Strangler Fig pattern.
+
+## Service: {{ service_name }}
+
+## Boundary Information
+- Classes: {{ boundary.classes | join(', ') if boundary.classes is iterable else boundary.classes }}
+- Dependencies on: {{ boundary.dependencies_on | join(', ') if boundary.dependencies_on is iterable else 'None' }}
+
+## Original Cross-Boundary Imports
+{{ original_imports }}
+
+## New API Endpoints
+{{ api_endpoints }}
+
+## Instructions
+Generate a complete migration plan with:
+
+### 1. Facade Adapter Class
+Write a facade/adapter class (in the monolith's language) that:
+- Has the SAME interface as the original monolith classes being replaced
+- Internally delegates ALL calls to the new microservice via HTTP
+- Can be dropped into the monolith as a replacement with zero code changes to callers
+- Includes a feature flag to toggle between old (direct) and new (HTTP) implementation
+
+### 2. Three-Phase Migration Plan
+
+**Phase 1 — Read Traffic (Shadow Mode)**
+- Route read-only operations to the new service
+- Compare responses with monolith for correctness
+- Rollback steps if discrepancies found
+
+**Phase 2 — Write Traffic (Dual Write)**
+- Route write operations to BOTH monolith and new service
+- New service becomes the source of truth
+- Rollback steps
+
+**Phase 3 — Decommission**
+- Remove monolith module completely
+- Update all facade references to direct service calls
+- Rollback steps
+
+### 3. Rollback Procedures
+For each phase, provide specific rollback steps.
+
+## Output
+Return the full plan as Markdown.

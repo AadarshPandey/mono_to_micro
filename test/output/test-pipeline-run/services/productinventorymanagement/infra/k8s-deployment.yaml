@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productinventorymanagement
+  labels:
+    app: productinventorymanagement
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: productinventorymanagement
+  template:
+    metadata:
+      labels:
+        app: productinventorymanagement
+    spec:
+      containers:
+        - name: productinventorymanagement
+          image: your-registry/productinventorymanagement:latest
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8082
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productinventorymanagement-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: productinventorymanagement
+  ports:
+    - port: 8082
+      targetPort: 8082
+      protocol: TCP

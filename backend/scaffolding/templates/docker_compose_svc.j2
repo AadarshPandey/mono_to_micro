@@ -1,0 +1,16 @@
+{# backend/scaffolding/templates/docker_compose_svc.j2 #}
+  {{ service_name | lower | replace(' ', '-') }}:
+    build:
+      context: ./services/{{ service_name | lower | replace(' ', '-') }}
+      dockerfile: Dockerfile
+    ports:
+      - "{{ port }}:{{ port }}"
+    environment:
+      - SERVER_PORT={{ port }}
+    {% if dependencies %}
+    depends_on:
+      {% for dep in dependencies %}
+      - {{ dep | lower | replace(' ', '-') }}
+      {% endfor %}
+    {% endif %}
+    restart: unless-stopped

@@ -1,0 +1,39 @@
+# docker-compose.prod.yml — Production overrides for Monolith Breaker
+#
+# FUTURE DEVELOPMENT:
+# - Override dev defaults with production-grade settings.
+# - Neo4j:
+#     - Use named volumes with backup strategy.
+#     - Set NEO4J_AUTH to a strong password via secrets.
+#     - Enable SSL for bolt connections.
+#     - Configure memory limits (heap, pagecache).
+# - FastAPI backend:
+#     - Build from Dockerfile (no --reload).
+#     - Set API_KEY via Docker secret or env injection.
+#     - Configure gunicorn with multiple uvicorn workers.
+#     - Health check endpoint for orchestrator.
+# - Streamlit frontend:
+#     - Build from Dockerfile.
+#     - Disable Streamlit development mode.
+# - OTel Collector:
+#     - Configure exporters for production APM (Jaeger, Datadog, etc).
+# - Add resource limits (cpu, memory) to all services.
+# - Add restart policies (unless-stopped).
+# - Network isolation between frontend and backend tiers.
+
+version: "3.9"
+
+services:
+  neo4j:
+    extends:
+      file: docker-compose.yml
+      service: neo4j
+    # TODO: Override with production environment, volumes, resource limits
+
+  otel-collector:
+    extends:
+      file: docker-compose.yml
+      service: otel-collector
+    # TODO: Override with production exporter config
+
+  # TODO: Add backend and frontend services built from Dockerfiles

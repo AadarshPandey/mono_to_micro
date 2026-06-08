@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: Customer Management Service API
+  version: 1.0.0
+  description: API for managing customer information, including creation, retrieval, and updates.
+x-internal-classes:
+  - com.enterprise.monolith.model.Customer
+  - com.enterprise.monolith.service.CustomerService
+  - com.enterprise.monolith.controller.CustomerController
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Checks the health and status of the Customer Management service.
+      operationId: getHealthStatus
+      responses:
+        200:
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+        500:
+          description: Service is unhealthy or internal server error
+  /api/customers:
+    get:
+      summary: Get all customers
+      description: Retrieves a list of all customers.
+      operationId: getAllCustomers
+      responses:
+        200:
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        500:
+          description: Internal server error
+    post:
+      summary: Create a new customer
+      description: Creates a new customer record with the provided details.
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreateRequest'
+      responses:
+        201:
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          description: Invalid input (e.g., missing required fields, invalid email format, duplicate email)
+        500:
+          description: Internal server error
+  /api/customers/{id}:
+    get:
+      summary: Get customer by ID
+      description: Retrieves a single customer by their unique ID.
+      operationId: getCustomerById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the customer to retrieve
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        200:
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        404:
+          description: Customer not found
+        500:
+          description: Internal server error
+    put:
+      summary: Update an existing customer
+      description: Updates an existing customer's details by their unique ID. All updatable fields must be provided.
+      operationId: updateCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the customer to update
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+      responses:
+        200:
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          description: Invalid input (e.g., missing required fields, invalid email format, duplicate email)
+        404:
+          description: Customer not found
+        500:
+          description: Internal server error
+    delete:
+      summary: Delete a customer
+      description: Deletes a customer record by their unique ID.
+      operationId: deleteCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the customer to delete
+          schema:
+            type: integer
+            format: int64
+            minimum

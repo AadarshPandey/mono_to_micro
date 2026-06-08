@@ -1,0 +1,45 @@
+{# backend/ai/prompts/boundary_detection.j2 #}
+You are an expert software architect specialising in Domain-Driven Design (DDD) and microservice decomposition.
+
+## Task
+Analyse the following monolithic application's dependency graph and source code to identify optimal bounded contexts (microservice boundaries).
+
+## Dependency Graph (JSON)
+The graph below shows classes and their weighted relationships. Higher `combined_weight` means stronger coupling.
+```json
+{{ graph_json }}
+```
+
+## Source Code Context (Top Relevant Classes)
+{{ code_chunks }}
+
+## Source Language
+{{ language }}
+
+{% if num_services_hint %}
+## Architect Hint
+The architect suggests approximately {{ num_services_hint }} microservices as a target. Use this as a guideline, not a hard constraint.
+{% endif %}
+
+## Instructions
+1. Apply Domain-Driven Design principles to identify bounded contexts.
+2. Prefer HIGH internal cohesion and LOW external coupling for each boundary.
+3. NEVER split classes with high `dynamic_weight` or `combined_weight` across different services — they communicate frequently at runtime.
+4. Each boundary should represent a single business domain (e.g., Order Management, Customer Management).
+5. For each boundary, suggest an API style: "REST" for standard CRUD, "gRPC" for high-throughput pairs, "event-driven" for async workflows.
+6. Flag any god-classes (classes tightly coupled to 5+ other clusters) that cannot be cleanly assigned — list them separately.
+7. Explain your rationale in plain English for each boundary.
+
+## Output Format
+Return a JSON array. Each element:
+```json
+{
+  "name": "BoundaryName",
+  "classes": ["ClassName1", "ClassName2"],
+  "rationale": "Why these classes belong together",
+  "suggested_api_style": "REST",
+  "dependencies_on": ["OtherBoundary1"]
+}
+```
+
+Return ONLY the JSON array, no other text.

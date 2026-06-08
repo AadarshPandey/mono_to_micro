@@ -1,0 +1,12 @@
+# infra/kubernetes/ollama.yaml
+# Ollama Placeholder — Not used with Gemini API
+#
+# FUTURE DEVELOPMENT:
+# - This file is a placeholder for a potential local LLM migration path.
+# - If migrating away from Gemini API to a self-hosted LLM:
+#     - Deploy Ollama as a Deployment with GPU node affinity.
+#     - Mount model storage as a PersistentVolumeClaim.
+#     - Expose port 11434 via ClusterIP Service.
+#     - Pull models (e.g. codellama, deepseek-coder) on startup.
+#     - Update backend/ai/llm_client.py to use Ollama endpoint instead of Gemini.
+# - Currently a no-op — all LLM calls go to Google Gemini API.

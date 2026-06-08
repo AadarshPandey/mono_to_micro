@@ -1,0 +1,15 @@
+# infra/kubernetes/namespace.yaml
+# Kubernetes Namespace for Monolith Breaker
+#
+# FUTURE DEVELOPMENT:
+# - Define a dedicated namespace to isolate all Monolith Breaker resources.
+# - Apply resource quotas and limit ranges for the namespace.
+# - Add labels for cost tracking and team ownership.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monolith-breaker
+  labels:
+    app: monolith-breaker
+    # TODO: Add environment label (dev/staging/prod)

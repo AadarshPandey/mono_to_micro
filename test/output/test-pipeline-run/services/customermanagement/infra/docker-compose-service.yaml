@@ -1,0 +1,10 @@
+  customermanagement:
+    build:
+      context: ./services/customermanagement
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+    
+    restart: unless-stopped

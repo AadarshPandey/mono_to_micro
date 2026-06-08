@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentprocessing
+  labels:
+    app: paymentprocessing
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: paymentprocessing
+  template:
+    metadata:
+      labels:
+        app: paymentprocessing
+    spec:
+      containers:
+        - name: paymentprocessing
+          image: your-registry/paymentprocessing:latest
+          ports:
+            - containerPort: 8083
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8083
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentprocessing-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: paymentprocessing
+  ports:
+    - port: 8083
+      targetPort: 8083
+      protocol: TCP

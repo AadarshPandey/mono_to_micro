@@ -1,0 +1,21 @@
+  reporting:
+    build:
+      context: ./services/reporting
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    environment:
+      - SERVER_PORT=8085
+    
+    depends_on:
+      
+      - customermanagement
+      
+      - productinventorymanagement
+      
+      - paymentprocessing
+      
+      - ordermanagement
+      
+    
+    restart: unless-stopped

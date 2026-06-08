@@ -1,0 +1,29 @@
+{# backend/scaffolding/templates/java_springboot/application.yml.j2 #}
+server:
+  port: {{ port }}
+
+spring:
+  application:
+    name: {{ service_name | lower | replace(' ', '-') }}
+  datasource:
+    url: jdbc:h2:mem:{{ service_name | lower }}db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

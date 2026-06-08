@@ -1,0 +1,39 @@
+# infra/otel/collector-config.yaml
+# OpenTelemetry Collector Configuration
+#
+# FUTURE DEVELOPMENT:
+# - Configure receivers to accept traces from instrumented monolith applications:
+#     - otlp receiver on gRPC (port 4317) and HTTP (port 4318)
+# - Configure processors:
+#     - batch processor for efficient export
+#     - memory_limiter to prevent OOM
+# - Configure exporters:
+#     - file exporter to dump traces as JSON for the dynamic_analyzer to ingest
+#     - (optional) jaeger/zipkin exporter for trace visualization
+# - Define the pipeline connecting receivers → processors → exporters.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    # TODO: Configure batch size and timeout
+
+exporters:
+  # TODO: Configure file exporter for dynamic_analyzer ingestion
+  # TODO: Optionally add Jaeger/Zipkin exporter
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+      # TODO: Add file exporter to pipeline

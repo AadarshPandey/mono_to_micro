@@ -1,0 +1,11 @@
+{
+  "comment": "Sample OTel trace export fixture for testing dynamic analysis",
+  "future_development": [
+    "Populate with realistic OpenTelemetry JSON trace data",
+    "Include spans showing call patterns between the 4 sample monolith domains",
+    "Include varying call frequencies: Order→Inventory (high), Customer→Payment (medium)",
+    "Include latency data for resource sizing hints",
+    "Format must match OpenTelemetry JSON export schema"
+  ],
+  "resourceSpans": []
+}

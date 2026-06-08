@@ -1,0 +1,39 @@
+# .dockerignore
+# ── Git / VCS ──────────────────────────────────────────────────────────────
+.git
+.gitignore
+
+# ── Python ─────────────────────────────────────────────────────────────────
+.venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# ── Data (mounted at runtime) ─────────────────────────────────────────────
+data/
+
+# ── IDE / OS ───────────────────────────────────────────────────────────────
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Docker ─────────────────────────────────────────────────────────────────
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# ── Docs / Config ─────────────────────────────────────────────────────────
+README.md
+plan.md
+LICENSE
+*.md
+!frontend/**/*.md
+
+# ── Env (secrets) ─────────────────────────────────────────────────────────
+.env

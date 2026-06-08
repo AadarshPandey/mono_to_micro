@@ -1,0 +1,19 @@
+  ordermanagement:
+    build:
+      context: ./services/ordermanagement
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - SERVER_PORT=8084
+    
+    depends_on:
+      
+      - customermanagement
+      
+      - productinventorymanagement
+      
+      - paymentprocessing
+      
+    
+    restart: unless-stopped

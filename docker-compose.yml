@@ -1,0 +1,78 @@
+# docker-compose.yml — Full stack for Monolith Breaker
+#
+# Usage:
+#   docker compose up -d              # start all services
+#   docker compose up -d neo4j        # start Neo4j only
+#   docker compose logs -f app        # follow app logs
+#   docker compose down               # stop everything
+
+services:
+  # ── Monolith Breaker App ────────────────────────────────────────────────
+  app:
+    image: aadarshpandey/monolith-breaker:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: monolith-breaker
+    ports:
+      - "8000:8000" # FastAPI backend
+      - "8501:8501" # Streamlit frontend
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password
+      - NEO4J_DATABASE=neo4j
+      - CHROMA_PERSIST_DIR=/app/data/chroma
+      - UPLOAD_DIR=/app/data/uploads
+      - OUTPUT_DIR=/app/data/outputs
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - GOOGLE_API_KEY=
+    volumes:
+      - app-data:/app/data
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  # ── Neo4j Graph Database ────────────────────────────────────────────────
+  neo4j:
+    image: neo4j:5-community
+    container_name: monolith-breaker-neo4j
+    ports:
+      - "7474:7474" # Browser UI
+      - "7687:7687" # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1" ]
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 10
+
+  # ── OpenTelemetry Collector ─────────────────────────────────────────────
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: monolith-breaker-otel
+    ports:
+      - "4317:4317" # gRPC receiver
+      - "4318:4318" # HTTP receiver
+    volumes:
+      - ./infra/otel/collector-config.yaml:/etc/otelcol/config.yaml
+    restart: unless-stopped
+
+volumes:
+  app-data:
+  neo4j-data:
+  neo4j-logs:

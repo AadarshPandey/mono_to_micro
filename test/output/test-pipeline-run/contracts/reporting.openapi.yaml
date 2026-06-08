@@ -1,0 +1,205 @@
+openapi: 3.1.0
+info:
+  title: Reporting Service API
+  version: 1.0.0
+  description: API for generating various business reports and dashboards. This service aggregates data from Customer, Order, Payment, and Inventory domains.
+servers:
+  - url: http://localhost:8080/api/reports
+    description: Local development server
+  - url: http://reporting-service:8080/api/reports
+    description: Internal reporting service
+tags:
+  - name: Reports
+    description: Operations related to business reports
+  - name: Health
+    description: Health check endpoint
+x-internal-classes:
+  - com.enterprise.monolith.service.ReportService
+  - com.enterprise.monolith.controller.ReportController
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Checks the health status of the Reporting service.
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+        '500':
+          $ref: '#/components/schemas/Error'
+  /dashboard:
+    get:
+      summary: Get business dashboard report
+      description: Generates an aggregated report containing key metrics from Customer, Order, Payment, and Inventory domains.
+      tags:
+        - Reports
+      operationId: getDashboardReport
+      responses:
+        '200':
+          description: Successfully retrieved dashboard report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardReport'
+        '500':
+          $ref: '#/components/schemas/Error'
+  /revenue-by-customer:
+    get:
+      summary: Get revenue breakdown by customer
+      description: Provides a report detailing revenue generated per customer, involving cross-domain data (Order, Payment, Customer).
+      tags:
+        - Reports
+      operationId: getRevenueByCustomer
+      responses:
+        '200':
+          description: Successfully retrieved revenue by customer report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevenueByCustomerItem'
+        '500':
+          $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DashboardReport:
+      type: object
+      description: Aggregated business dashboard report.
+      properties:
+        totalCustomers:
+          type: integer
+          format: int32
+          description: Total number of customers.
+          example: 1500
+        platinumCustomers:
+          type: integer
+          format: int32
+          description: Number of platinum tier customers.
+          example: 50
+        avgCreditScore:
+          type: number
+          format: double
+          description: Average credit score across all customers.
+          example: 680.5
+        totalOrders:
+          type: integer
+          format: int32
+          description: Total number of orders placed.
+          example: 3200
+        pendingOrders:
+          type: integer
+          format: int32
+          description: Number of orders currently in pending status.
+          example: 120
+        paidOrders:
+          type: integer
+          format: int32
+          description: Number of orders that have been paid.
+          example: 2900
+        cancelledOrders:
+          type: integer
+          format: int32
+          description: Number of orders that have been cancelled.
+          example: 180
+        totalRevenue:
+          type: number
+          format: double
+          description: Total revenue generated from all payments.
+          example: 1250000.75
+        totalPayments:
+          type: integer
+          format: int32
+          description: Total number of payments processed.
+          example: 3100
+        totalProducts:
+          type: integer
+          format: int32
+          description: Total number of unique products.
+          example: 500
+        lowStockProducts:
+          type: integer
+          format: int32
+          description: Number of products with low stock levels.
+          example: 25
+        totalInventoryValue:
+          type: number
+          format: double
+          description: Total monetary value of all products currently in inventory.
+          example: 850000.00
+      example:
+        totalCustomers: 1500
+        platinumCustomers: 50
+        avgCreditScore: 680.5
+        totalOrders: 3200
+        pendingOrders: 120
+        paidOrders: 2900
+        cancelledOrders: 180
+        totalRevenue: 1250000.75
+        totalPayments: 3100
+        totalProducts: 500
+        lowStockProducts: 25
+        totalInventoryValue: 850000.00
+    RevenueByCustomerItem:
+      type: object
+      description: Details of revenue generated by a specific customer.
+      properties:
+        customerId:
+          type: integer
+          format: int64
+          description: Unique identifier of the customer.
+          example: 101
+        customerName:
+          type: string
+          description: Name of the customer.
+          example: "Alice Smith"
+        totalRevenue:
+          type: number
+          format: double
+          description: Total revenue generated from this customer.
+          example: 549.99
+        orderCount:
+          type: integer
+          format: int32
+          description: Total number of orders placed by this customer.
+          example: 5
+      example:
+        customerId: 101
+        customerName: "Alice Smith"
+        totalRevenue: 549.99
+        orderCount: 5
+    Error:
+      type: object
+      description: Generic error response.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: The time the error occurred.
+        status:
+          type: integer
+          description: HTTP status code.
+        error:
+          type: string
+          description: Short error message.
+        message:
+          type: string
+          description: Detailed error message.
+        path:
+          type: string
+          description: The request path that caused the error.
+      example:
+        timestamp: "2023-10-27T10:30:00Z"
+        status: 500
+        error: "Internal Server Error"
+        message: "An unexpected error occurred while processing your request."
+        path: "/api/reports/dashboard"

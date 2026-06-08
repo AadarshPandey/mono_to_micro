@@ -1,0 +1,33 @@
+# .gitignore
+# Environment
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# Data directories
+data/uploads/
+data/outputs/
+data/chroma/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# UV
+uv.lock

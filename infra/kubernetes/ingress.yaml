@@ -1,0 +1,23 @@
+# infra/kubernetes/ingress.yaml
+# Kubernetes Ingress for Monolith Breaker
+#
+# FUTURE DEVELOPMENT:
+# - Define Ingress rules to expose:
+#     - /api/* → FastAPI backend Service (port 8000)
+#     - / → Streamlit frontend Service (port 8501)
+# - Configure TLS termination with a cert-manager ClusterIssuer.
+# - Add annotations for:
+#     - nginx.ingress.kubernetes.io/proxy-body-size: "100m" (for zip uploads)
+#     - nginx.ingress.kubernetes.io/proxy-read-timeout: "300" (for long pipeline runs)
+# - Set up host-based routing for production domain.
+#
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: monolith-breaker-ingress
+#   namespace: monolith-breaker
+#   annotations:
+#     # TODO: Add ingress annotations
+# spec:
+#   rules:
+#     # TODO: Define routing rules
