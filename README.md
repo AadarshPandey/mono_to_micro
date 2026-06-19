@@ -410,23 +410,82 @@ Open your browser at `http://localhost:8501`
 
 ## 🐳 Docker
 
-### Full Stack (Recommended)
+### Pull from Docker Hub
 
 ```bash
-# Build and start everything (Backend + Neo4j + OTel)
+# Pull the pre-built image (recommended for quick start)
+docker pull aadarshpandey/monolith-breaker:v2
+```
+
+### Build Locally
+
+```bash
+# Build the image from source
+docker build -t aadarshpandey/monolith-breaker:v2 .
+```
+
+### Docker Compose — Full Stack (Recommended)
+
+Spins up all 3 services (App + Neo4j + OTel Collector) with a single command:
+
+```bash
+# Build and start everything in the background
 docker compose up -d --build
 
-# View logs
+# Start without rebuilding (if image already exists)
+docker compose up -d
+
+# Start only the database (for local development)
+docker compose up -d neo4j otel-collector
+```
+
+### Container Management
+
+```bash
+# View running containers
+docker compose ps
+
+# Follow live logs for the app
 docker compose logs -f app
+
+# Follow logs for all services
+docker compose logs -f
+
+# Restart a specific service
+docker compose restart app
+
+# Stop all services (keeps data volumes)
+docker compose down
+
+# Stop and remove all data (full reset)
+docker compose down -v
+```
+
+### Push to Docker Hub
+
+```bash
+# Tag and push a new version
+docker tag aadarshpandey/monolith-breaker:v2 aadarshpandey/monolith-breaker:latest
+docker push aadarshpandey/monolith-breaker:v2
+docker push aadarshpandey/monolith-breaker:latest
 ```
 
 ### Access Points
 
-| Service | URL |
-|---------|-----|
-| **Frontend UI** | `http://localhost:8501` |
-| **Backend API** | `http://localhost:8000` |
-| **Neo4j Browser** | `http://localhost:7474` |
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend UI** | `http://localhost:8501` | Streamlit dashboard |
+| **Backend API** | `http://localhost:8000` | FastAPI + Swagger docs at `/docs` |
+| **Neo4j Browser** | `http://localhost:7474` | Graph database UI (login: `neo4j` / `password`) |
+| **OTel Collector** | `http://localhost:4318` | OpenTelemetry HTTP receiver |
+
+### Docker Images Used
+
+| Image | Purpose |
+|-------|---------|
+| `aadarshpandey/monolith-breaker:v2` | Backend API + Streamlit frontend |
+| `neo4j:5-community` | Graph database for knowledge graph |
+| `otel/opentelemetry-collector:latest` | Distributed trace collection |
 
 ---
 
